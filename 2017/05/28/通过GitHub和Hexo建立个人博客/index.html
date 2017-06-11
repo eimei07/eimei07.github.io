@@ -1,0 +1,168 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>通过GitHub和Hexo搭建个人博客 | IMXUN | Learn and live</title>
+
+  
+  <meta name="author" content="eimei">
+  
+
+  
+  <meta name="description" content="折腾了几个小时终于用hexo和github构建了一个个人博客，终于可以愉快的记录一些东西了。实际上20分钟就能完成整个过程，为了下次不走弯路，赶紧记录下这次构建过程。
+Github账号申请首先，你需要一个github账号，然后在账号下建立一个repository，这个过程及其简单，此处唯一需要说明的">
+  
+
+  
+  <meta name="keywords" content="Hexo,GitHub,个人博客,undefined">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="通过GitHub和Hexo搭建个人博客"/>
+
+  <meta property="og:site_name" content="IMXUN"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="IMXUN" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+</head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">IMXUN</a>
+    </h1>
+    <p class="site-description">Learn and live</p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>通过GitHub和Hexo搭建个人博客</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2017/05/28/通过GitHub和Hexo建立个人博客/" rel="bookmark">
+        <time class="entry-date published" datetime="2017-05-28T13:51:07.000Z">
+          2017-05-28
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>折腾了几个小时终于用hexo和github构建了一个个人博客，终于可以愉快的记录一些东西了。实际上20分钟就能完成整个过程，为了下次不走弯路，赶紧记录下这次构建过程。</p>
+<h2 id="Github账号申请"><a href="#Github账号申请" class="headerlink" title="Github账号申请"></a>Github账号申请</h2><p>首先，你需要一个<a href="https://github.com/" target="_blank" rel="external">github账号</a>，然后在账号下建立一个repository，这个过程及其简单，此处唯一需要说明的是repository必须命名为username.github.io，username就是你的用户名，而且必须要跟你用户名相同。</p>
+<h2 id="安装node-js和git"><a href="#安装node-js和git" class="headerlink" title="安装node.js和git"></a>安装node.js和git</h2><p>由于hexo是基于node.js构建的，所以我们需要在电脑上<a href="https://nodejs.org/" target="_blank" rel="external">部署node.js</a>，官网推荐有两个版本，追求稳定的用户可以安装LTS长期支持版，这个也是官网推荐大多数用户安装的。具体安装过程不详述，这个过程大家应该重复了无数遍了。<a href="https://git-scm.com/downloads" target="_blank" rel="external">安装git</a>基本与node.js类似，直接现在安装即可。</p>
+<h2 id="安装hexo"><a href="#安装hexo" class="headerlink" title="安装hexo"></a>安装hexo</h2><p>接下来就要在自己电脑上安装hexo。hexo官网首页给出了如下简单的说明。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">npm install hexo-cli -g</div><div class="line">hexo init blog</div><div class="line">cd blog</div><div class="line">npm install</div><div class="line">hexo server</div></pre></td></tr></table></figure>
+<p>首先，我们需要在命令行下输入 <code>npm install hexo-cli -g</code> 命令执行安装。</p>
+<p>然后执行 <code>hexo init blog</code> 初始化博客。这里blog是指你为hexo建立的文件夹。</p>
+<p>接下来用cd命令进入hexo文件夹，执行<code>npm install</code> 命令，根据博客既定的dependencies配置安装所有的依赖包。</p>
+<p>执行最后一条命令我们可以在本地地址localhost:4000来访问博客，这里我们可以暂且不做。</p>
+<p>最后我们还要执行下面的命令，否则之后deploy的时候会出现ERROR Deployer not found:的错误。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">npm install hexo --save</div></pre></td></tr></table></figure>
+<h2 id="设置SSH-keys"><a href="#设置SSH-keys" class="headerlink" title="设置SSH keys"></a>设置SSH keys</h2><p>安装完git之后，在我们的右键菜单就会多出Git GUI Here和Git Bash Here，点击Git Bash Here进入Bash命令行，执行一下命令查询是否已经存在SSH Key。没有配置过的话应该是不存在的，如果存在的话，直接删除.ssh文件夹里面所有文件即可。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ls -al ~/.ssh</div></pre></td></tr></table></figure>
+<p>然后输入以下命令，把XXXXX@XXX.com换成你Github注册时用的邮箱。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ssh-keygen -t rsa -C &quot;XXXXX@XXX.com&quot;</div></pre></td></tr></table></figure>
+<p>然后它会提示要你输入passphrase，输入的话下面可能会用到。然后依次输入下列命令，一路回车。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">ssh-agent -s</div><div class="line">ssh-add ~/.ssh/id_rsa</div><div class="line">eval `ssh-agent -s`</div><div class="line">ssh-add</div><div class="line">clip &lt; ~/.ssh/id_rsa.pub</div></pre></td></tr></table></figure>
+<p>下面进入Github，找仓库页面上的setting，然后点Deploy keys，进去把刚才存放粘贴板上的内容复制进去，title可以随便写。保存完成之后我们可以执行以下命令检查。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ssh -T git@github.com</div></pre></td></tr></table></figure>
+<p>中间会向你确定是否继续联接，输入yes，如果配置成功，会显示Hi, yourusername!, You’ve successfully authenticated, but GitHub does not provide shell access.</p>
+<h2 id="更改repo文件并发布"><a href="#更改repo文件并发布" class="headerlink" title="更改repo文件并发布"></a>更改repo文件并发布</h2><p>马上就要成功了，进入hexo文件夹，用编辑器打开_config.yml文件，拖到最下面你会看到如下信息。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">deploy:</div><div class="line">  type:</div></pre></td></tr></table></figure>
+<p>把你自己的信息输入进去就行，yourusername更换成你自己的用户名即可。这里type:后面需要填写git而不是github，</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">deploy:</div><div class="line">  type: git  </div><div class="line">  repository: https://github.com/yourusername/yourusername.github.io.git</div><div class="line">  branch: master</div></pre></td></tr></table></figure>
+<p>之后执行下列命令就可以通过yourusername.github.io来访问你自己的网站了。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">hexo g</div><div class="line">hexo d</div></pre></td></tr></table></figure>
+<h2 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h2><p>折腾了好几遍，参考了很多博客，顺序可能有点乱，大致的过程就是上面这样，到这里只是完成了hexo博客搭建的第一步，之后主题设置，发表博客，备份内容等等都还需要很长时间的摸索。</p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p><a href="http://jingyan.baidu.com/article/d8072ac47aca0fec95cefd2d.html" target="_blank" rel="external">史上最详细“截图”搭建Hexo博客并部署到Github</a></p>
+<p><a href="http://www.jianshu.com/p/e99ed60390a8" target="_blank" rel="external">20分钟教你使用hexo搭建github博客</a></p>
+<p><a href="http://blog.csdn.net/gdutxiaoxu/article/details/53576018" target="_blank" rel="external">手把手教你用Hexo+Github 搭建属于自己的博客</a></p>
+<p><a href="http://www.cnblogs.com/liulangmao/p/4323064.html" target="_blank" rel="external">使用hexo搭建github.io博客(一)</a></p>
+<p>手把手教你使用Hexo + Github Pages搭建个人独立博客 </p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+      
+
+    <span class="post-categories">
+      <i class="icon-categories"></i>
+        <a href="/categories/互联网/">互联网</a>
+    </span>
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/Hexo/">Hexo</a><a href="/tags/GitHub/">GitHub</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2017 eimei
+    
+  </p>
+</footer>
+    
+  </div>
+</div>
+</body>
+</html>
