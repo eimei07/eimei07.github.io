@@ -84,55 +84,8 @@
 </blockquote>
 <h1 id="apply-函数"><a href="#apply-函数" class="headerlink" title="apply() 函数"></a><code>apply()</code> 函数</h1><h2 id="常用调用"><a href="#常用调用" class="headerlink" title="常用调用"></a>常用调用</h2><figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">apply(X, MARGIN, FUN, <span class="keyword">...</span>)</div></pre></td></tr></table></figure>
 <ul>
-<li><p><code>apply()</code> 函数主要作用于数组和矩阵，如果<code>X</code>是数据框，<code>apply()</code> 会通过<code>as.matrix()</code>或者<code>as. array()</code>将其转为矩阵。如果所有行列不是数值型或者类型不一致，导致转换失败，那么apply是运算不出任何一列的结果，因此不建议对数据框使用。</p>
-</li>
-<li><p><code>MARGIN</code>参数为1时，作用对象是行，为2时作用对象是列，<code>c(1, 2)</code>指作用对象为行列。</p>
-</li>
-<li><p>可以指定函数的参数</p>
-</li>
+<li><code>apply()</code> 函数主要作用于数组和矩阵，如果<code>X</code>是数据框，<code>apply()</code> 会通过<code>as.matrix()</code>或者<code>as. array()</code>将其转为矩阵。如果所有行列不是数值型或者类型不一致，导致转换失败，那么apply是运算不出任何一列的结果，因此不建议对数据框使用。</li>
 </ul>
-<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><p>在进行行列的合计或者平均等统计量计算时，用<code>apply()</code>是很有效率的。例如：</p>
-<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&gt; apply(state.x77, <span class="number">2</span>, min)</div><div class="line">Population     Income Illiteracy   Life Exp     Murder    HS Grad      Frost       Area </div><div class="line">    <span class="number">365.00</span>    <span class="number">3098.00</span>       <span class="number">0.50</span>      <span class="number">67.96</span>       <span class="number">1.40</span>      <span class="number">37.80</span>       <span class="number">0.00</span>    <span class="number">1049.00</span></div></pre></td></tr></table></figure>
-<p>在对向量进行分组计算是，<code>apply()</code>也是非常容易实现的，例如我们可以把向量临时分为行列，然后对其使用<code>apply()</code>函数。</p>
-<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&gt; x = <span class="number">1</span>:<span class="number">12</span></div><div class="line">&gt; apply(matrix(x, ncol = <span class="number">3</span>, byrow = <span class="literal">TRUE</span>), <span class="number">1</span>, sum)</div><div class="line">[<span class="number">1</span>]  <span class="number">6</span> <span class="number">15</span> <span class="number">24</span> <span class="number">33</span></div></pre></td></tr></table></figure>
-<p>当然，在进行简单的行列统计量计算时，也可以直接使用<code>rowSums()</code>, <code>colSums()</code>, <code>rowSums()</code>, <code>rowMeans()</code>, <code>colMeans()</code>函数。</p>
-<h1 id="lapply-和sapply-函数"><a href="#lapply-和sapply-函数" class="headerlink" title="lapply()和sapply()函数"></a><code>lapply()</code>和<code>sapply()</code>函数</h1><p><code>lapply()</code>函数读入一个列表，将函数应用到列表的每一个元素，然后返回一个与原来相同长度的列表。</p>
-<p><code>sapply()</code>函数将<code>lapply()</code>函数的结果做了简单化处理，通常，如果结果是一个列表，其中每个元素的长度都是1，那么<code>sapply()</code>将返回一个向量。如果结果是一个列表，其中每个元素都是相同长度的向量(大于1)，那么<code>sapply()</code>将返回一个矩阵。如果<code>sapply()</code>不能解决问题，那么它只返回一个列表，与<code>lapply()</code>会给出的结果没有什么不同。</p>
-<h2 id="常用调用-1"><a href="#常用调用-1" class="headerlink" title="常用调用"></a>常用调用</h2><p>调用方法 <code>lapply()</code>和<code>sapply()</code>是相同的。</p>
-<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">lapply(X, FUN, <span class="keyword">...</span>)</div><div class="line">sapply(X, FUN, <span class="keyword">...</span>)</div></pre></td></tr></table></figure>
-<h2 id="使用-1"><a href="#使用-1" class="headerlink" title="使用"></a>使用</h2><p>首先对数据使用<code>lapply()</code>函数，查看结果。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line">&gt; state &lt;- as.data.frame(state.x77)</div><div class="line">&gt; cls_list &lt;- lapply(state, class)</div><div class="line">&gt; cls_list &lt;- lapply(state, class)</div><div class="line">&gt; cls_list</div><div class="line">$Population</div><div class="line">[1] &quot;numeric&quot;</div><div class="line"> </div><div class="line">$Income</div><div class="line">[1] &quot;numeric&quot;</div><div class="line"> </div><div class="line">$Illiteracy</div><div class="line">[1] &quot;numeric&quot;</div><div class="line"> </div><div class="line">$`Life Exp`</div><div class="line">[1] &quot;numeric&quot;</div><div class="line"> </div><div class="line">$Murder</div><div class="line">[1] &quot;numeric&quot;</div><div class="line"> </div><div class="line">$`HS Grad`</div><div class="line">[1] &quot;numeric&quot;</div><div class="line"> </div><div class="line">$Frost</div><div class="line">[1] &quot;numeric&quot;</div><div class="line"> </div><div class="line">$Area</div><div class="line">[1] &quot;numeric&quot;</div><div class="line"> </div><div class="line">&gt; class(cls_list)</div><div class="line">[1] &quot;list&quot;</div><div class="line"></div><div class="line">&gt; length(cls_list)</div><div class="line">[1] 8</div></pre></td></tr></table></figure>
-<p>我们可以看到，返回结果是一个长度为8的列表，每个元素对应数据集的一列。如果要简化输出效果，我们可以使用<code>as.character(cls_list)</code>，使其转化为一个字符型向量，但是使用<code>sapple()</code>函数可以简单完成这种目的。</p>
-<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&gt; cls_vect &lt;- sapply(state, class)</div><div class="line">&gt; cls_vect</div><div class="line">Population     Income Illiteracy   Life Exp     Murder    HS Grad      Frost       Area </div><div class="line"> <span class="string">"numeric"</span>  <span class="string">"numeric"</span>  <span class="string">"numeric"</span>  <span class="string">"numeric"</span>  <span class="string">"numeric"</span>  <span class="string">"numeric"</span>  <span class="string">"numeric"</span>  <span class="string">"numeric"</span> </div><div class="line">&gt; class(cls_vect)</div><div class="line">[<span class="number">1</span>] <span class="string">"character"</span></div></pre></td></tr></table></figure>
-<p>当每个元素都是相同长度的向量(大于1)时，则返回一个矩阵。</p>
-<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">&gt; cls_mtx &lt;- sapply(state, range)</div><div class="line">&gt; cls_mtx</div><div class="line">     Population Income Illiteracy Life Exp Murder HS Grad Frost   Area</div><div class="line">[<span class="number">1</span>,]        <span class="number">365</span>   <span class="number">3098</span>        <span class="number">0.5</span>    <span class="number">67.96</span>    <span class="number">1.4</span>    <span class="number">37.8</span>     <span class="number">0</span>   <span class="number">1049</span></div><div class="line">[<span class="number">2</span>,]      <span class="number">21198</span>   <span class="number">6315</span>        <span class="number">2.8</span>    <span class="number">73.60</span>   <span class="number">15.1</span>    <span class="number">67.3</span>   <span class="number">188</span> <span class="number">566432</span></div><div class="line">&gt; class(cls_mtx)</div><div class="line">[<span class="number">1</span>] <span class="string">"matrix"</span></div></pre></td></tr></table></figure>
-<p>当返回结果长度不同时，<code>sapply()</code>函数只返回一个列表。</p>
-<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div></pre></td><td class="code"><pre><div class="line">&gt; cls_unq &lt;- sapply(state, unique)</div><div class="line">&gt; cls_unq</div><div class="line">$Population</div><div class="line"> [<span class="number">1</span>]  <span class="number">3615</span>   <span class="number">365</span>  <span class="number">2212</span>  <span class="number">2110</span> <span class="number">21198</span>  <span class="number">2541</span>  <span class="number">3100</span>   <span class="number">579</span>  <span class="number">8277</span>  <span class="number">4931</span>   <span class="number">868</span>   <span class="number">813</span> <span class="number">11197</span>  <span class="number">5313</span>  <span class="number">2861</span></div><div class="line">[<span class="number">16</span>]  <span class="number">2280</span>  <span class="number">3387</span>  <span class="number">3806</span>  <span class="number">1058</span>  <span class="number">4122</span>  <span class="number">5814</span>  <span class="number">9111</span>  <span class="number">3921</span>  <span class="number">2341</span>  <span class="number">4767</span>   <span class="number">746</span>  <span class="number">1544</span>   <span class="number">590</span>   <span class="number">812</span>  <span class="number">7333</span></div><div class="line">[<span class="number">31</span>]  <span class="number">1144</span> <span class="number">18076</span>  <span class="number">5441</span>   <span class="number">637</span> <span class="number">10735</span>  <span class="number">2715</span>  <span class="number">2284</span> <span class="number">11860</span>   <span class="number">931</span>  <span class="number">2816</span>   <span class="number">681</span>  <span class="number">4173</span> <span class="number">12237</span>  <span class="number">1203</span>   <span class="number">472</span></div><div class="line">[<span class="number">46</span>]  <span class="number">4981</span>  <span class="number">3559</span>  <span class="number">1799</span>  <span class="number">4589</span>   <span class="number">376</span></div><div class="line"></div><div class="line">$Income</div><div class="line"> [<span class="number">1</span>] <span class="number">3624</span> <span class="number">6315</span> <span class="number">4530</span> <span class="number">3378</span> <span class="number">5114</span> <span class="number">4884</span> <span class="number">5348</span> <span class="number">4809</span> <span class="number">4815</span> <span class="number">4091</span> <span class="number">4963</span> <span class="number">4119</span> <span class="number">5107</span> <span class="number">4458</span> <span class="number">4628</span> <span class="number">4669</span> <span class="number">3712</span> <span class="number">3545</span></div><div class="line">[<span class="number">19</span>] <span class="number">3694</span> <span class="number">5299</span> <span class="number">4755</span> <span class="number">4751</span> <span class="number">4675</span> <span class="number">3098</span> <span class="number">4254</span> <span class="number">4347</span> <span class="number">4508</span> <span class="number">5149</span> <span class="number">4281</span> <span class="number">5237</span> <span class="number">3601</span> <span class="number">4903</span> <span class="number">3875</span> <span class="number">5087</span> <span class="number">4561</span> <span class="number">3983</span></div><div class="line">[<span class="number">37</span>] <span class="number">4660</span> <span class="number">4449</span> <span class="number">4558</span> <span class="number">3635</span> <span class="number">4167</span> <span class="number">3821</span> <span class="number">4188</span> <span class="number">4022</span> <span class="number">3907</span> <span class="number">4701</span> <span class="number">4864</span> <span class="number">3617</span> <span class="number">4468</span> <span class="number">4566</span></div><div class="line"></div><div class="line">$Illiteracy</div><div class="line"> [<span class="number">1</span>] <span class="number">2.1</span> <span class="number">1.5</span> <span class="number">1.8</span> <span class="number">1.9</span> <span class="number">1.1</span> <span class="number">0.7</span> <span class="number">0.9</span> <span class="number">1.3</span> <span class="number">2.0</span> <span class="number">0.6</span> <span class="number">0.5</span> <span class="number">1.6</span> <span class="number">2.8</span> <span class="number">2.4</span> <span class="number">0.8</span> <span class="number">2.2</span> <span class="number">1.4</span> <span class="number">1.0</span> <span class="number">2.3</span> <span class="number">1.7</span></div><div class="line"></div><div class="line">$`Life Exp`</div><div class="line"> [<span class="number">1</span>] <span class="number">69.05</span> <span class="number">69.31</span> <span class="number">70.55</span> <span class="number">70.66</span> <span class="number">71.71</span> <span class="number">72.06</span> <span class="number">72.48</span> <span class="number">70.06</span> <span class="number">68.54</span> <span class="number">73.60</span> <span class="number">71.87</span> <span class="number">70.14</span> <span class="number">70.88</span> <span class="number">72.56</span> <span class="number">72.58</span></div><div class="line">[<span class="number">16</span>] <span class="number">70.10</span> <span class="number">68.76</span> <span class="number">70.39</span> <span class="number">70.22</span> <span class="number">71.83</span> <span class="number">70.63</span> <span class="number">72.96</span> <span class="number">68.09</span> <span class="number">70.69</span> <span class="number">70.56</span> <span class="number">72.60</span> <span class="number">69.03</span> <span class="number">71.23</span> <span class="number">70.93</span> <span class="number">70.32</span></div><div class="line">[<span class="number">31</span>] <span class="number">69.21</span> <span class="number">72.78</span> <span class="number">70.82</span> <span class="number">71.42</span> <span class="number">72.13</span> <span class="number">70.43</span> <span class="number">71.90</span> <span class="number">67.96</span> <span class="number">72.08</span> <span class="number">70.11</span> <span class="number">70.90</span> <span class="number">72.90</span> <span class="number">71.64</span> <span class="number">70.08</span> <span class="number">71.72</span></div><div class="line">[<span class="number">46</span>] <span class="number">69.48</span> <span class="number">70.29</span></div><div class="line"></div><div class="line">$Murder</div><div class="line"> [<span class="number">1</span>] <span class="number">15.1</span> <span class="number">11.3</span>  <span class="number">7.8</span> <span class="number">10.1</span> <span class="number">10.3</span>  <span class="number">6.8</span>  <span class="number">3.1</span>  <span class="number">6.2</span> <span class="number">10.7</span> <span class="number">13.9</span>  <span class="number">5.3</span>  <span class="number">7.1</span>  <span class="number">2.3</span>  <span class="number">4.5</span> <span class="number">10.6</span> <span class="number">13.2</span>  <span class="number">2.7</span>  <span class="number">8.5</span></div><div class="line">[<span class="number">19</span>]  <span class="number">3.3</span> <span class="number">11.1</span> <span class="number">12.5</span>  <span class="number">9.3</span>  <span class="number">5.0</span>  <span class="number">2.9</span> <span class="number">11.5</span>  <span class="number">5.2</span>  <span class="number">9.7</span> <span class="number">10.9</span>  <span class="number">1.4</span>  <span class="number">7.4</span>  <span class="number">6.4</span>  <span class="number">4.2</span>  <span class="number">6.1</span>  <span class="number">2.4</span> <span class="number">11.6</span>  <span class="number">1.7</span></div><div class="line">[<span class="number">37</span>] <span class="number">11.0</span> <span class="number">12.2</span>  <span class="number">5.5</span>  <span class="number">9.5</span>  <span class="number">4.3</span>  <span class="number">6.7</span>  <span class="number">3.0</span>  <span class="number">6.9</span></div><div class="line"></div><div class="line">$`HS Grad`</div><div class="line"> [<span class="number">1</span>] <span class="number">41.3</span> <span class="number">66.7</span> <span class="number">58.1</span> <span class="number">39.9</span> <span class="number">62.6</span> <span class="number">63.9</span> <span class="number">56.0</span> <span class="number">54.6</span> <span class="number">52.6</span> <span class="number">40.6</span> <span class="number">61.9</span> <span class="number">59.5</span> <span class="number">52.9</span> <span class="number">59.0</span> <span class="number">59.9</span> <span class="number">38.5</span> <span class="number">42.2</span> <span class="number">54.7</span></div><div class="line">[<span class="number">19</span>] <span class="number">52.3</span> <span class="number">58.5</span> <span class="number">52.8</span> <span class="number">57.6</span> <span class="number">41.0</span> <span class="number">48.8</span> <span class="number">59.2</span> <span class="number">59.3</span> <span class="number">65.2</span> <span class="number">52.5</span> <span class="number">55.2</span> <span class="number">52.7</span> <span class="number">50.3</span> <span class="number">53.2</span> <span class="number">51.6</span> <span class="number">60.0</span> <span class="number">50.2</span> <span class="number">46.4</span></div><div class="line">[<span class="number">37</span>] <span class="number">37.8</span> <span class="number">53.3</span> <span class="number">41.8</span> <span class="number">47.4</span> <span class="number">67.3</span> <span class="number">57.1</span> <span class="number">47.8</span> <span class="number">63.5</span> <span class="number">41.6</span> <span class="number">54.5</span> <span class="number">62.9</span></div><div class="line"></div><div class="line">$Frost</div><div class="line"> [<span class="number">1</span>]  <span class="number">20</span> <span class="number">152</span>  <span class="number">15</span>  <span class="number">65</span> <span class="number">166</span> <span class="number">139</span> <span class="number">103</span>  <span class="number">11</span>  <span class="number">60</span>   <span class="number">0</span> <span class="number">126</span> <span class="number">127</span> <span class="number">122</span> <span class="number">140</span> <span class="number">114</span>  <span class="number">95</span>  <span class="number">12</span> <span class="number">161</span> <span class="number">101</span> <span class="number">125</span> <span class="number">160</span>  <span class="number">50</span> <span class="number">108</span></div><div class="line">[<span class="number">24</span>] <span class="number">155</span> <span class="number">188</span> <span class="number">174</span> <span class="number">115</span> <span class="number">120</span>  <span class="number">82</span>  <span class="number">80</span> <span class="number">186</span> <span class="number">124</span>  <span class="number">44</span> <span class="number">172</span>  <span class="number">70</span>  <span class="number">35</span> <span class="number">137</span> <span class="number">168</span>  <span class="number">85</span>  <span class="number">32</span> <span class="number">100</span> <span class="number">149</span> <span class="number">173</span></div><div class="line"></div><div class="line">$Area</div><div class="line"> [<span class="number">1</span>]  <span class="number">50708</span> <span class="number">566432</span> <span class="number">113417</span>  <span class="number">51945</span> <span class="number">156361</span> <span class="number">103766</span>   <span class="number">4862</span>   <span class="number">1982</span>  <span class="number">54090</span>  <span class="number">58073</span>   <span class="number">6425</span>  <span class="number">82677</span>  <span class="number">55748</span></div><div class="line">[<span class="number">14</span>]  <span class="number">36097</span>  <span class="number">55941</span>  <span class="number">81787</span>  <span class="number">39650</span>  <span class="number">44930</span>  <span class="number">30920</span>   <span class="number">9891</span>   <span class="number">7826</span>  <span class="number">56817</span>  <span class="number">79289</span>  <span class="number">47296</span>  <span class="number">68995</span> <span class="number">145587</span></div><div class="line">[<span class="number">27</span>]  <span class="number">76483</span> <span class="number">109889</span>   <span class="number">9027</span>   <span class="number">7521</span> <span class="number">121412</span>  <span class="number">47831</span>  <span class="number">48798</span>  <span class="number">69273</span>  <span class="number">40975</span>  <span class="number">68782</span>  <span class="number">96184</span>  <span class="number">44966</span>   <span class="number">1049</span></div><div class="line">[<span class="number">40</span>]  <span class="number">30225</span>  <span class="number">75955</span>  <span class="number">41328</span> <span class="number">262134</span>  <span class="number">82096</span>   <span class="number">9267</span>  <span class="number">39780</span>  <span class="number">66570</span>  <span class="number">24070</span>  <span class="number">54464</span>  <span class="number">97203</span></div><div class="line"></div><div class="line">&gt; class(cls_unq)</div><div class="line">[<span class="number">1</span>] <span class="string">"list"</span></div></pre></td></tr></table></figure>
-<p>我们再对数据集使用<code>lapply()</code>函数，通过调用<code>identical()</code>可以看出，当返回结果长度不同时<code>sapply()</code>函数与<code>lapply()</code>函数返回结果相同。</p>
-<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&gt; cls_unq_l &lt;- lapply(state, unique)</div><div class="line"></div><div class="line">&gt; identical(cls_unq, cls_unq_l)</div><div class="line">[<span class="number">1</span>] <span class="literal">TRUE</span></div></pre></td></tr></table></figure>
-<h1 id="vapply-和tapply-函数"><a href="#vapply-和tapply-函数" class="headerlink" title="vapply()和tapply()函数"></a><code>vapply()</code>和<code>tapply()</code>函数</h1><p>vapply类似于sapply，但是有一个预先指定的返回值类型，因此它可以更安全，针对大量数据集时也可能更快。<code>tapply()</code>函数可以实现对一些变量分组应用指定函数。</p>
-<h2 id="常用调用-2"><a href="#常用调用-2" class="headerlink" title="常用调用"></a>常用调用</h2><figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">vapply(X, FUN, FUN.VALUE, <span class="keyword">...</span>, USE.NAMES = <span class="literal">TRUE</span>)</div><div class="line">tapply(X, FUN, FUN.VALUE, <span class="keyword">...</span>, USE.NAMES = <span class="literal">TRUE</span>)</div></pre></td></tr></table></figure>
-<h2 id="使用-2"><a href="#使用-2" class="headerlink" title="使用"></a>使用</h2><p>先看<code>sapply()</code>的最后一个例子，返回结果长度不同时会以列表形式呈现。当我们使用<code>vapply()</code>预先指定返回类型时，就会提示错误信息。</p>
-<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&gt; vapply(state, unique, numeric(<span class="number">1</span>))</div><div class="line">Error <span class="keyword">in</span> vapply(state, unique, numeric(<span class="number">1</span>)) : 值的长度必需为<span class="number">1</span>，</div><div class="line"> 但FUN(X[[<span class="number">1</span>]])结果的长度却是<span class="number">50</span></div></pre></td></tr></table></figure>
-<p>但是大部分情况下<code>sapply()</code>都能够有很好的表现，还能减少输入量。</p>
-<p>其次是<code>tapply()</code>，这里调用<code>airquality</code>数据集来计算按月分组的平均风速</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">&gt; table(airquality$Month)</div><div class="line"></div><div class="line"> 5  6  7  8  9 </div><div class="line">31 30 31 31 30 </div><div class="line"></div><div class="line">&gt; table(airquality$Wind)</div><div class="line"></div><div class="line"> 1.7  2.3  2.8  3.4    4  4.1  4.6  5.1  5.7  6.3  6.9  7.4    8  8.6  9.2  9.7 10.3 10.9 11.5   12 12.6 </div><div class="line">   1    1    1    1    1    1    4    3    3    8    9   10   11    8    8   11   11    8   15    4    3 </div><div class="line">13.2 13.8 14.3 14.9 15.5 16.1 16.6 18.4 20.1 20.7 </div><div class="line">   2    5    6    8    3    1    3    1    1    1 </div><div class="line"></div><div class="line">&gt; tapply(airquality$Wind, airquality$Month, mean)</div><div class="line">        5         6         7         8         9 </div><div class="line">11.622581 10.266667  8.941935  8.793548 10.180000</div></pre></td></tr></table></figure>
-<h1 id="mapply-函数"><a href="#mapply-函数" class="headerlink" title="mapply()函数"></a><code>mapply()</code>函数</h1><p>函数<code>mapply()</code>是函数<code>sapply()</code>的变形版，<code>mapply()</code> 将函数<code>FUN</code>依次应用每一个参数的第一个元素、第二个元素、第三个元素上。</p>
-<h2 id="常用调用-3"><a href="#常用调用-3" class="headerlink" title="常用调用"></a>常用调用</h2><figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mapply(FUN, <span class="keyword">...</span>）</div></pre></td></tr></table></figure>
-<h2 id="使用-3"><a href="#使用-3" class="headerlink" title="使用"></a>使用</h2><p>再返回结果长度相同时，<code>sapply()</code>和<code>mapply()</code>结果是一样的，例如我们对<code>airquality</code>数据前三列求均值。</p>
-<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">&gt; mapply(mean, airquality[,<span class="number">1</span>:<span class="number">3</span>], na.rm = <span class="literal">T</span>)</div><div class="line">     Ozone    Solar.R       Wind </div><div class="line"> <span class="number">42.129310</span> <span class="number">185.931507</span>   <span class="number">9.957516</span> </div><div class="line"></div><div class="line">&gt; sapply(airquality[,<span class="number">1</span>:<span class="number">3</span>], mean, na.rm = <span class="literal">T</span>)</div><div class="line">     Ozone    Solar.R       Wind </div><div class="line"> <span class="number">42.129310</span> <span class="number">185.931507</span>   <span class="number">9.957516</span></div></pre></td></tr></table></figure>
-<p>但是在返回结果长度不同时，<code>sapply()</code>就会返回错误提示。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&gt; sapply(1:4, rep, 1:4)</div><div class="line">Error in FUN(X[[i]], ...) : &apos;times&apos;参数不对</div></pre></td></tr></table></figure></p>
-<p>我们把<code>rep</code>参数设置为2时，会返回一个矩阵。</p>
-<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&gt; temp &lt;- sapply(<span class="number">1</span>:<span class="number">4</span>, rep, <span class="number">2</span>)</div><div class="line">&gt; temp</div><div class="line">     [,<span class="number">1</span>] [,<span class="number">2</span>] [,<span class="number">3</span>] [,<span class="number">4</span>]</div><div class="line">[<span class="number">1</span>,]    <span class="number">1</span>    <span class="number">2</span>    <span class="number">3</span>    <span class="number">4</span></div><div class="line">[<span class="number">2</span>,]    <span class="number">1</span>    <span class="number">2</span>    <span class="number">3</span>    <span class="number">4</span></div><div class="line"></div><div class="line">&gt; class(temp)</div><div class="line">[<span class="number">1</span>] <span class="string">"matrix"</span></div></pre></td></tr></table></figure>
-<p>但是<code>mapply()</code>函数可以把<code>rep</code>依次应用到每个参数的每个元素。</p>
-<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">&gt; mapply(rep, times = <span class="number">1</span>:<span class="number">4</span>, x = <span class="number">4</span>:<span class="number">1</span>)</div><div class="line">[[<span class="number">1</span>]]</div><div class="line">[<span class="number">1</span>] <span class="number">4</span></div><div class="line"></div><div class="line">[[<span class="number">2</span>]]</div><div class="line">[<span class="number">1</span>] <span class="number">3</span> <span class="number">3</span></div><div class="line"></div><div class="line">[[<span class="number">3</span>]]</div><div class="line">[<span class="number">1</span>] <span class="number">2</span> <span class="number">2</span> <span class="number">2</span></div><div class="line"></div><div class="line">[[<span class="number">4</span>]]</div><div class="line">[<span class="number">1</span>] <span class="number">1</span> <span class="number">1</span> <span class="number">1</span> <span class="number">1</span></div></pre></td></tr></table></figure>
-<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><ol>
-<li><a href="https://www.coursera.org/learn/r-programming" target="_blank" rel="external">R Programming</a></li>
-<li><a href="https://www.douban.com/note/566422481/" target="_blank" rel="external">R语言apply家族：apply, lapply,sapply,vapply,mapply的用法</a></li>
-<li><a href="http://blog.sina.com.cn/s/blog_6caea8bf0100xkpg.html" target="_blank" rel="external">R中利用apply、tapply、lapply、sapply、mapply、table等函数进行分组统计</a></li>
-<li><a href="http://bbs.pinggu.org/thread-4126063-1-1.html" target="_blank" rel="external">R语言中apply,sapply,tapply函数的区别与应用</a></li>
-</ol>
-
       
     </div>
 
@@ -167,108 +120,6 @@
         <i class="icon-comments"></i>
         <span>
           <a href="/2017/06/11/R向量化操作/#comment">评论</a>
-        </span>
-      </span>
-    </div>
-    
-  </div>
-</article>
-
-
-
-  <article>
-
-  
-    
-    <h3 class="article-title"><a href="/2017/05/28/通过GitHub和Hexo建立个人博客/"><span>通过GitHub和Hexo搭建个人博客</span></a></h3>
-    
-  
-
-  <div class="article-top-meta">
-    <span class="posted-on">
-      <a href="/2017/05/28/通过GitHub和Hexo建立个人博客/" rel="bookmark">
-        <time class="entry-date published" datetime="2017-05-28T13:51:07.000Z">
-          2017-05-28
-        </time>
-      </a>
-    </span>
-  </div>
-
-
-  
-
-  <div class="article-content">
-    <div class="entry">
-      
-        <blockquote>
-<p>折腾了几个小时终于用hexo和github构建了一个个人博客，终于可以愉快的记录一些东西了。实际上20分钟就能完成整个过程，为了下次不走弯路，赶紧记录下这次构建过程。</p>
-</blockquote>
-<h2 id="Github账号申请"><a href="#Github账号申请" class="headerlink" title="Github账号申请"></a>Github账号申请</h2><p>首先，你需要一个<a href="https://github.com/" target="_blank" rel="external">github账号</a>，然后在账号下建立一个repository，这个过程及其简单，此处唯一需要说明的是repository必须命名为username.github.io，username就是你的用户名，而且必须要跟你用户名相同。</p>
-<h2 id="安装node-js和git"><a href="#安装node-js和git" class="headerlink" title="安装node.js和git"></a>安装node.js和git</h2><p>由于hexo是基于node.js构建的，所以我们需要在电脑上<a href="https://nodejs.org/" target="_blank" rel="external">部署node.js</a>，官网推荐有两个版本，追求稳定的用户可以安装LTS长期支持版，这个也是官网推荐大多数用户安装的。具体安装过程不详述，这个过程大家应该重复了无数遍了。<a href="https://git-scm.com/downloads" target="_blank" rel="external">安装git</a>基本与node.js类似，直接现在安装即可。</p>
-<h2 id="安装hexo"><a href="#安装hexo" class="headerlink" title="安装hexo"></a>安装hexo</h2><p>接下来就要在自己电脑上安装hexo。hexo官网首页给出了如下简单的说明。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">npm install hexo-cli -g</div><div class="line">hexo init blog</div><div class="line">cd blog</div><div class="line">npm install</div><div class="line">hexo server</div></pre></td></tr></table></figure>
-<p>首先，我们需要在命令行下输入 <code>npm install hexo-cli -g</code> 命令执行安装。</p>
-<p>然后执行 <code>hexo init blog</code> 初始化博客。这里blog是指你为hexo建立的文件夹。</p>
-<p>接下来用cd命令进入hexo文件夹，执行<code>npm install</code> 命令，根据博客既定的dependencies配置安装所有的依赖包。</p>
-<p>执行最后一条命令我们可以在本地地址localhost:4000来访问博客，这里我们可以暂且不做。</p>
-<p>最后我们还要执行下面的命令，否则之后deploy的时候会出现ERROR Deployer not found:的错误。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">npm install hexo --save</div></pre></td></tr></table></figure>
-<h2 id="设置SSH-keys"><a href="#设置SSH-keys" class="headerlink" title="设置SSH keys"></a>设置SSH keys</h2><p>安装完git之后，在我们的右键菜单就会多出Git GUI Here和Git Bash Here，点击Git Bash Here进入Bash命令行，执行一下命令查询是否已经存在SSH Key。没有配置过的话应该是不存在的，如果存在的话，直接删除.ssh文件夹里面所有文件即可。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ls -al ~/.ssh</div></pre></td></tr></table></figure>
-<p>然后输入以下命令，把XXXXX@XXX.com换成你Github注册时用的邮箱。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ssh-keygen -t rsa -C &quot;XXXXX@XXX.com&quot;</div></pre></td></tr></table></figure>
-<p>然后它会提示要你输入passphrase，输入的话下面可能会用到。然后依次输入下列命令，一路回车。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">ssh-agent -s</div><div class="line">ssh-add ~/.ssh/id_rsa</div><div class="line">eval `ssh-agent -s`</div><div class="line">ssh-add</div><div class="line">clip &lt; ~/.ssh/id_rsa.pub</div></pre></td></tr></table></figure>
-<p>下面进入Github，找仓库页面上的setting，然后点Deploy keys，进去把刚才存放粘贴板上的内容复制进去，title可以随便写。保存完成之后我们可以执行以下命令检查。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ssh -T git@github.com</div></pre></td></tr></table></figure>
-<p>中间会向你确定是否继续联接，输入yes，如果配置成功，会显示Hi, yourusername!, You’ve successfully authenticated, but GitHub does not provide shell access.</p>
-<h2 id="更改repo文件并发布"><a href="#更改repo文件并发布" class="headerlink" title="更改repo文件并发布"></a>更改repo文件并发布</h2><p>马上就要成功了，进入hexo文件夹，用编辑器打开_config.yml文件，拖到最下面你会看到如下信息。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">deploy:</div><div class="line">  type:</div></pre></td></tr></table></figure>
-<p>把你自己的信息输入进去就行，yourusername更换成你自己的用户名即可。这里type:后面需要填写git而不是github，</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">deploy:</div><div class="line">  type: git  </div><div class="line">  repository: https://github.com/yourusername/yourusername.github.io.git</div><div class="line">  branch: master</div></pre></td></tr></table></figure>
-<p>之后执行下列命令就可以通过yourusername.github.io来访问你自己的网站了。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">hexo g</div><div class="line">hexo d</div></pre></td></tr></table></figure>
-<h2 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h2><p>折腾了好几遍，参考了很多博客，顺序可能有点乱，大致的过程就是上面这样，到这里只是完成了hexo博客搭建的第一步，之后主题设置，发表博客，备份内容等等都还需要很长时间的摸索。</p>
-<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p><a href="http://jingyan.baidu.com/article/d8072ac47aca0fec95cefd2d.html" target="_blank" rel="external">史上最详细“截图”搭建Hexo博客并部署到Github</a></p>
-<p><a href="http://www.jianshu.com/p/e99ed60390a8" target="_blank" rel="external">20分钟教你使用hexo搭建github博客</a></p>
-<p><a href="http://blog.csdn.net/gdutxiaoxu/article/details/53576018" target="_blank" rel="external">手把手教你用Hexo+Github 搭建属于自己的博客</a></p>
-<p><a href="http://www.cnblogs.com/liulangmao/p/4323064.html" target="_blank" rel="external">使用hexo搭建github.io博客(一)</a></p>
-<p>手把手教你使用Hexo + Github Pages搭建个人独立博客 </p>
-
-      
-    </div>
-
-  </div>
-
-  <div class="article-footer">
-    <div class="article-meta pull-left">
-
-    
-      
-
-    <span class="post-categories">
-      <i class="icon-categories"></i>
-        <a href="/categories/互联网/">互联网</a>
-    </span>
-    
-
-    
-    
-
-    <span class="post-tags">
-      <i class="icon-tags"></i>
-        <a href="/tags/Hexo/">Hexo</a><a href="/tags/GitHub/">GitHub</a>
-    </span>
-    
-
-    </div>
-
-    
-    <div class="article-meta pull-right">
-      <span>
-        <i class="icon-comments"></i>
-        <span>
-          <a href="/2017/05/28/通过GitHub和Hexo建立个人博客/#comment">评论</a>
         </span>
       </span>
     </div>
@@ -333,19 +184,7 @@
 </tr>
 </tbody>
 </table>
-<p>然后到本地的hexo文件夹的source子文件夹下创建名字为CNAME的新文件，输入你需要绑定的域名，例如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">yourname.com</div></pre></td></tr></table></figure></p>
-<p>注意，前面不要加<a href="http://，文件也不要带任何后缀" target="_blank" rel="external">http://，文件也不要带任何后缀</a></p>
-<p>最后，输入以下命令部署到GitHub</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">hexo g</div><div class="line">hexo d</div></pre></td></tr></table></figure>
-<p>现在，输入你自己的域名就可以登陆博客了。</p>
-<h2 id="发布新博客"><a href="#发布新博客" class="headerlink" title="发布新博客"></a>发布新博客</h2><h3 id="新博客管理"><a href="#新博客管理" class="headerlink" title="新博客管理"></a>新博客管理</h3><p>首先进入hexo文件夹下的scaffold子文件夹，用文本编辑器打开post.md文件，里面内容应该如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">---</div><div class="line">title: &#123;&#123; title &#125;&#125;</div><div class="line">date: &#123;&#123; date &#125;&#125;</div><div class="line">---</div></pre></td></tr></table></figure></p>
-<p>修改内容如下，增加categories，tags，keywords等属性分类，然后保存。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">---</div><div class="line">title: &#123;&#123; title &#125;&#125;</div><div class="line">date: &#123;&#123; date &#125;&#125;</div><div class="line">categories:</div><div class="line">tags:</div><div class="line">keywords:</div><div class="line">---</div></pre></td></tr></table></figure>
-<p>到命令行中输入<code>hexo new &quot;新博客标题&quot;</code>即可创建新博客。到hexo/source/_posts文件夹下用markdown编辑器打开就能编辑内容。</p>
-<h3 id="发布新博客-1"><a href="#发布新博客-1" class="headerlink" title="发布新博客"></a>发布新博客</h3><p>编辑好内容保存后，到命令行下输入以下命令即可部署博客到Github。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">hexo g</div><div class="line">hexo d</div></pre></td></tr></table></figure></p>
-<h2 id="更改主题"><a href="#更改主题" class="headerlink" title="更改主题"></a>更改主题</h2><h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p><a href="http://blog.csdn.net/gao497278979/article/details/52079669" target="_blank" rel="external">Github绑定自定义域名(附hexo配置)</a></p>
-<p><a href="http://www.jianshu.com/p/1d427e888dda" target="_blank" rel="external">【Hexo+Github】域名和github绑定的问题</a></p>
-
+<p>然后到本地的hexo文件夹的source子文件夹下创建名字为CNAME的新文件，输入你需要绑定的域名，例如：</p>
       
     </div>
 
@@ -380,6 +219,80 @@
         <i class="icon-comments"></i>
         <span>
           <a href="/2017/05/28/配置hexo/#comment">评论</a>
+        </span>
+      </span>
+    </div>
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2017/05/28/通过GitHub和Hexo建立个人博客/"><span>通过GitHub和Hexo搭建个人博客</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2017/05/28/通过GitHub和Hexo建立个人博客/" rel="bookmark">
+        <time class="entry-date published" datetime="2017-05-28T13:51:07.000Z">
+          2017-05-28
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <blockquote>
+<p>折腾了几个小时终于用hexo和github构建了一个个人博客，终于可以愉快的记录一些东西了。实际上20分钟就能完成整个过程，为了下次不走弯路，赶紧记录下这次构建过程。</p>
+</blockquote>
+<h2 id="Github账号申请"><a href="#Github账号申请" class="headerlink" title="Github账号申请"></a>Github账号申请</h2><p>首先，你需要一个<a href="https://github.com/" target="_blank" rel="external">github账号</a>，然后在账号下建立一个repository，这个过程及其简单，此处唯一需要说明的是repository必须命名为username.github.io，username就是你的用户名，而且必须要跟你用户名相同。</p>
+<h2 id="安装node-js和git"><a href="#安装node-js和git" class="headerlink" title="安装node.js和git"></a>安装node.js和git</h2><p>由于hexo是基于node.js构建的，所以我们需要在电脑上<a href="https://nodejs.org/" target="_blank" rel="external">部署node.js</a>，官网推荐有两个版本，追求稳定的用户可以安装LTS长期支持版，这个也是官网推荐大多数用户安装的。具体安装过程不详述，这个过程大家应该重复了无数遍了。<a href="https://git-scm.com/downloads" target="_blank" rel="external">安装git</a>基本与node.js类似，直接现在安装即可。</p>
+<h2 id="安装hexo"><a href="#安装hexo" class="headerlink" title="安装hexo"></a>安装hexo</h2><p>接下来就要在自己电脑上安装hexo。hexo官网首页给出了如下简单的说明。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">npm install hexo-cli -g</div><div class="line">hexo init blog</div><div class="line">cd blog</div><div class="line">npm install</div><div class="line">hexo server</div></pre></td></tr></table></figure>
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+      
+
+    <span class="post-categories">
+      <i class="icon-categories"></i>
+        <a href="/categories/互联网/">互联网</a>
+    </span>
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/Hexo/">Hexo</a><a href="/tags/GitHub/">GitHub</a>
+    </span>
+    
+
+    </div>
+
+    
+    <div class="article-meta pull-right">
+      <span>
+        <i class="icon-comments"></i>
+        <span>
+          <a href="/2017/05/28/通过GitHub和Hexo建立个人博客/#comment">评论</a>
         </span>
       </span>
     </div>

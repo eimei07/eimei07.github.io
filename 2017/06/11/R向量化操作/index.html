@@ -14,7 +14,7 @@
 
 apply() 函数常用调用1apply(X, MARGIN, FUN, ...)
 
-apply() 函数主要作用于数组和矩阵">
+apply() 函数主要作用于数组和矩阵，如果X是数据框，apply() 会通过as.matrix()或者as. array()将其转为矩阵。如果所有行列不是数值型或者类型不一致，导致转换失败，那么apply是运算不出任何一列的结果，因此不建议对数据框使用。">
   
 
   
@@ -91,8 +91,10 @@ apply() 函数主要作用于数组和矩阵">
 </blockquote>
 <h1 id="apply-函数"><a href="#apply-函数" class="headerlink" title="apply() 函数"></a><code>apply()</code> 函数</h1><h2 id="常用调用"><a href="#常用调用" class="headerlink" title="常用调用"></a>常用调用</h2><figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">apply(X, MARGIN, FUN, <span class="keyword">...</span>)</div></pre></td></tr></table></figure>
 <ul>
-<li><p><code>apply()</code> 函数主要作用于数组和矩阵，如果<code>X</code>是数据框，<code>apply()</code> 会通过<code>as.matrix()</code>或者<code>as. array()</code>将其转为矩阵。如果所有行列不是数值型或者类型不一致，导致转换失败，那么apply是运算不出任何一列的结果，因此不建议对数据框使用。</p>
-</li>
+<li><code>apply()</code> 函数主要作用于数组和矩阵，如果<code>X</code>是数据框，<code>apply()</code> 会通过<code>as.matrix()</code>或者<code>as. array()</code>将其转为矩阵。如果所有行列不是数值型或者类型不一致，导致转换失败，那么apply是运算不出任何一列的结果，因此不建议对数据框使用。</li>
+</ul>
+<a id="more"></a> 
+<ul>
 <li><p><code>MARGIN</code>参数为1时，作用对象是行，为2时作用对象是列，<code>c(1, 2)</code>指作用对象为行列。</p>
 </li>
 <li><p>可以指定函数的参数</p>
