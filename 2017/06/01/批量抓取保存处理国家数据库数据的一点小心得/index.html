@@ -1,0 +1,767 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="数据处理,rstatscn,国家数据库,R" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="国家数据库提供了海量的电子统计数据，免去了逐年查询录入整理数据的的麻烦，同时我们还能找到提供国家数据库接口的R包，是我们能够直接在R中查询处理数据，很是方便。最近在使用过程中发现了分地域年度指标获取过程中存在一些小问题，于是结合最近所学写了两个函数，实现了批量读取保存处理国家数据库数据，记下过程以留后用。  准备工具首先需要介绍的是rstatscn包，这个包提供了国家数据库的R接口，具体的函数介">
+<meta name="keywords" content="数据处理,rstatscn,国家数据库,R">
+<meta property="og:type" content="article">
+<meta property="og:title" content="批量抓取保存处理国家数据库数据的一点小心得">
+<meta property="og:url" content="http://yoursite.com/2017/06/01/批量抓取保存处理国家数据库数据的一点小心得/index.html">
+<meta property="og:site_name" content="IMXUN">
+<meta property="og:description" content="国家数据库提供了海量的电子统计数据，免去了逐年查询录入整理数据的的麻烦，同时我们还能找到提供国家数据库接口的R包，是我们能够直接在R中查询处理数据，很是方便。最近在使用过程中发现了分地域年度指标获取过程中存在一些小问题，于是结合最近所学写了两个函数，实现了批量读取保存处理国家数据库数据，记下过程以留后用。  准备工具首先需要介绍的是rstatscn包，这个包提供了国家数据库的R接口，具体的函数介">
+<meta property="og:updated_time" content="2017-06-17T13:11:49.571Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="批量抓取保存处理国家数据库数据的一点小心得">
+<meta name="twitter:description" content="国家数据库提供了海量的电子统计数据，免去了逐年查询录入整理数据的的麻烦，同时我们还能找到提供国家数据库接口的R包，是我们能够直接在R中查询处理数据，很是方便。最近在使用过程中发现了分地域年度指标获取过程中存在一些小问题，于是结合最近所学写了两个函数，实现了批量读取保存处理国家数据库数据，记下过程以留后用。  准备工具首先需要介绍的是rstatscn包，这个包提供了国家数据库的R接口，具体的函数介">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/06/01/批量抓取保存处理国家数据库数据的一点小心得/"/>
+
+
+
+
+
+  <title>批量抓取保存处理国家数据库数据的一点小心得 | IMXUN</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">IMXUN</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Learn and live</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/06/01/批量抓取保存处理国家数据库数据的一点小心得/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="eimei">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="IMXUN">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">批量抓取保存处理国家数据库数据的一点小心得</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-06-01T23:57:14+09:00">
+                2017-06-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/数据处理/" itemprop="url" rel="index">
+                    <span itemprop="name">数据处理</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/06/01/批量抓取保存处理国家数据库数据的一点小心得/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2017/06/01/批量抓取保存处理国家数据库数据的一点小心得/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p><a href="http://data.stats.gov.cn/index.htm" target="_blank" rel="external">国家数据库</a>提供了海量的电子统计数据，免去了逐年查询录入整理数据的的麻烦，同时我们还能找到提供国家数据库接口的R包，是我们能够直接在R中查询处理数据，很是方便。最近在使用过程中发现了分地域年度指标获取过程中存在一些小问题，于是结合最近所学写了两个函数，实现了批量读取保存处理国家数据库数据，记下过程以留后用。</p>
+</blockquote>
+<h1 id="准备工具"><a href="#准备工具" class="headerlink" title="准备工具"></a>准备工具</h1><p>首先需要介绍的是rstatscn包，这个包提供了国家数据库的R接口，具体的函数介绍这里不在重复，请参照<a href="http://www.bagualu.net/wordpress/rstatscn-the-r-interface-for-china-national-data" target="_blank" rel="external">作者文档</a>。rstatscn提供很方便的数据查询函数，大大简化了数据获得的方法。我们可以通过下面命令安装rstatscn包。</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">install.packages(<span class="string">"rstatscn"</span>)</div></pre></td></tr></table></figure>
+<a id="more"></a> 
+<h1 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h1><p>但是在进行分省年度数据查询时，是下面这样的结果。有时一个产业分类下一个地区会有多个指标的数据，而这样只是显示出一个。为了获取全部的数据，我们只能把数据抓取下来自己处理。</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line">&gt; <span class="keyword">library</span>(rstatscn)</div><div class="line">&gt; statscnQueryData(<span class="string">"A010101"</span>,dbcode=<span class="string">'fsnd'</span>,rowcode=<span class="string">'reg'</span>)</div><div class="line">                 <span class="number">2014</span>年 <span class="number">2013</span>年 <span class="number">2012</span>年 <span class="number">2011</span>年 <span class="number">2010</span>年 <span class="number">2009</span>年 <span class="number">2008</span>年 <span class="number">2007</span>年 <span class="number">2006</span>年</div><div class="line">北京市                <span class="number">0</span>      <span class="number">0</span>      <span class="number">0</span>      <span class="number">0</span>      <span class="number">0</span>      <span class="number">0</span>      <span class="number">0</span>      <span class="number">0</span>      <span class="number">0</span></div><div class="line">天津市                <span class="number">0</span>      <span class="number">0</span>      <span class="number">0</span>      <span class="number">0</span>      <span class="number">0</span>      <span class="number">0</span>      <span class="number">0</span>      <span class="number">0</span>      <span class="number">0</span></div><div class="line">河北省               <span class="number">11</span>     <span class="number">11</span>     <span class="number">11</span>     <span class="number">11</span>     <span class="number">11</span>     <span class="number">11</span>     <span class="number">11</span>     <span class="number">11</span>     <span class="number">11</span></div><div class="line">山西省               <span class="number">11</span>     <span class="number">11</span>     <span class="number">11</span>     <span class="number">11</span>     <span class="number">11</span>     <span class="number">11</span>     <span class="number">11</span>     <span class="number">11</span>     <span class="number">11</span></div><div class="line">内蒙古自治区         <span class="number">12</span>     <span class="number">12</span>     <span class="number">12</span>     <span class="number">12</span>     <span class="number">12</span>     <span class="number">12</span>     <span class="number">12</span>     <span class="number">12</span>     <span class="number">12</span></div><div class="line">辽宁省               <span class="number">14</span>     <span class="number">14</span>     <span class="number">14</span>     <span class="number">14</span>     <span class="number">14</span>     <span class="number">14</span>     <span class="number">14</span>     <span class="number">14</span>     <span class="number">14</span></div><div class="line">吉林省                <span class="number">9</span>      <span class="number">9</span>      <span class="number">9</span>      <span class="number">9</span>      <span class="number">9</span>      <span class="number">9</span>      <span class="number">9</span>      <span class="number">9</span>      <span class="number">9</span></div><div class="line">黑龙江省             <span class="number">13</span>     <span class="number">13</span>     <span class="number">13</span>     <span class="number">13</span>     <span class="number">13</span>     <span class="number">13</span>     <span class="number">13</span>     <span class="number">13</span>     <span class="number">13</span></div><div class="line">上海市                <span class="number">0</span>      <span class="number">0</span>      <span class="number">0</span>      <span class="number">0</span>      <span class="number">0</span>      <span class="number">0</span>      <span class="number">0</span>      <span class="number">0</span>      <span class="number">0</span></div><div class="line">江苏省               <span class="number">13</span>     <span class="number">13</span>     <span class="number">13</span>     <span class="number">13</span>     <span class="number">13</span>     <span class="number">13</span>     <span class="number">13</span>     <span class="number">13</span>     <span class="number">13</span></div><div class="line">浙江省               <span class="number">11</span>     <span class="number">11</span>     <span class="number">11</span>     <span class="number">11</span>     <span class="number">11</span>     <span class="number">11</span>     <span class="number">11</span>     <span class="number">11</span>     <span class="number">11</span></div><div class="line">安徽省               <span class="number">16</span>     <span class="number">16</span>     <span class="number">16</span>     <span class="number">16</span>     <span class="number">17</span>     <span class="number">17</span>     <span class="number">17</span>     <span class="number">17</span>     <span class="number">17</span></div><div class="line">福建省                <span class="number">9</span>      <span class="number">9</span>      <span class="number">9</span>      <span class="number">9</span>      <span class="number">9</span>      <span class="number">9</span>      <span class="number">9</span>      <span class="number">9</span>      <span class="number">9</span></div><div class="line">江西省               <span class="number">11</span>     <span class="number">11</span>     <span class="number">11</span>     <span class="number">11</span>     <span class="number">11</span>     <span class="number">11</span>     <span class="number">11</span>     <span class="number">11</span>     <span class="number">11</span></div><div class="line">山东省               <span class="number">17</span>     <span class="number">17</span>     <span class="number">17</span>     <span class="number">17</span>     <span class="number">17</span>     <span class="number">17</span>     <span class="number">17</span>     <span class="number">17</span>     <span class="number">17</span></div><div class="line">河南省               <span class="number">17</span>     <span class="number">17</span>     <span class="number">17</span>     <span class="number">17</span>     <span class="number">17</span>     <span class="number">17</span>     <span class="number">17</span>     <span class="number">17</span>     <span class="number">17</span></div><div class="line">湖北省               <span class="number">13</span>     <span class="number">13</span>     <span class="number">13</span>     <span class="number">13</span>     <span class="number">13</span>     <span class="number">13</span>     <span class="number">13</span>     <span class="number">13</span>     <span class="number">13</span></div><div class="line">湖南省               <span class="number">14</span>     <span class="number">14</span>     <span class="number">14</span>     <span class="number">14</span>     <span class="number">14</span>     <span class="number">14</span>     <span class="number">14</span>     <span class="number">14</span>     <span class="number">14</span></div><div class="line">广东省               <span class="number">21</span>     <span class="number">21</span>     <span class="number">21</span>     <span class="number">21</span>     <span class="number">21</span>     <span class="number">21</span>     <span class="number">21</span>     <span class="number">21</span>     <span class="number">21</span></div><div class="line">广西壮族自治区       <span class="number">14</span>     <span class="number">14</span>     <span class="number">14</span>     <span class="number">14</span>     <span class="number">14</span>     <span class="number">14</span>     <span class="number">14</span>     <span class="number">14</span>     <span class="number">14</span></div><div class="line">海南省                <span class="number">3</span>      <span class="number">3</span>      <span class="number">3</span>      <span class="number">2</span>      <span class="number">2</span>      <span class="number">2</span>      <span class="number">2</span>      <span class="number">2</span>      <span class="number">2</span></div><div class="line">重庆市                <span class="number">0</span>      <span class="number">0</span>      <span class="number">0</span>      <span class="number">0</span>      <span class="number">0</span>      <span class="number">0</span>      <span class="number">0</span>      <span class="number">0</span>      <span class="number">0</span></div><div class="line">四川省               <span class="number">21</span>     <span class="number">21</span>     <span class="number">21</span>     <span class="number">21</span>     <span class="number">21</span>     <span class="number">21</span>     <span class="number">21</span>     <span class="number">21</span>     <span class="number">21</span></div><div class="line">贵州省                <span class="number">9</span>      <span class="number">9</span>      <span class="number">9</span>      <span class="number">9</span>      <span class="number">9</span>      <span class="number">9</span>      <span class="number">9</span>      <span class="number">9</span>      <span class="number">9</span></div><div class="line">云南省               <span class="number">16</span>     <span class="number">16</span>     <span class="number">16</span>     <span class="number">16</span>     <span class="number">16</span>     <span class="number">16</span>     <span class="number">16</span>     <span class="number">16</span>     <span class="number">16</span></div><div class="line">西藏自治区            <span class="number">7</span>      <span class="number">7</span>      <span class="number">7</span>      <span class="number">7</span>      <span class="number">7</span>      <span class="number">7</span>      <span class="number">7</span>      <span class="number">7</span>      <span class="number">7</span></div><div class="line">陕西省               <span class="number">10</span>     <span class="number">10</span>     <span class="number">10</span>     <span class="number">10</span>     <span class="number">10</span>     <span class="number">10</span>     <span class="number">10</span>     <span class="number">10</span>     <span class="number">10</span></div><div class="line">甘肃省               <span class="number">14</span>     <span class="number">14</span>     <span class="number">14</span>     <span class="number">14</span>     <span class="number">14</span>     <span class="number">14</span>     <span class="number">14</span>     <span class="number">14</span>     <span class="number">14</span></div><div class="line">青海省                <span class="number">8</span>      <span class="number">8</span>      <span class="number">8</span>      <span class="number">8</span>      <span class="number">8</span>      <span class="number">8</span>      <span class="number">8</span>      <span class="number">8</span>      <span class="number">8</span></div><div class="line">宁夏回族自治区        <span class="number">5</span>      <span class="number">5</span>      <span class="number">5</span>      <span class="number">5</span>      <span class="number">5</span>      <span class="number">5</span>      <span class="number">5</span>      <span class="number">5</span>      <span class="number">5</span></div><div class="line">新疆维吾尔自治区     <span class="number">14</span>     <span class="number">14</span>     <span class="number">14</span>     <span class="number">14</span>     <span class="number">14</span>     <span class="number">14</span>     <span class="number">14</span>     <span class="number">14</span>     <span class="number">14</span></div></pre></td></tr></table></figure>
+<h1 id="获取数据"><a href="#获取数据" class="headerlink" title="获取数据"></a>获取数据</h1><p>当我们需要抓取大量数据时每次要话费很长时间，因此一次抓取所有可能需要的数据保存在本地电脑是一个不错的选择。结合cousera 上R Programming课程所学，写了一个函数，通过指定抓取的指标和地域，可以实现批量保存数据。</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">getdata &lt;- <span class="keyword">function</span>(codeindex, postcode) &#123;</div><div class="line">  <span class="keyword">for</span> (i <span class="keyword">in</span> codeindex) &#123;</div><div class="line">    <span class="comment"># 如果不存在指定文件夹则创建</span></div><div class="line">    <span class="keyword">if</span> (!file.exists(i)) &#123;dir.create(i)&#125;</div><div class="line">    <span class="comment"># 更改到指定文件夹</span></div><div class="line">    setwd(paste(<span class="string">"./"</span>, i, sep = <span class="string">""</span>))</div><div class="line">    <span class="keyword">for</span> (j <span class="keyword">in</span> postcode) &#123;</div><div class="line">      <span class="comment"># 获取数据</span></div><div class="line">      tempdata &lt;- statscnQueryData(i, dbcode = <span class="string">'fsnd'</span>, moreWd = list(name = <span class="string">'reg'</span>, value = j))</div><div class="line">      <span class="comment"># 刷新数据时间跨度为20年</span></div><div class="line">      tempdata &lt;- statscnQueryLastN(<span class="number">20</span>)</div><div class="line">      <span class="comment"># 保存文件</span></div><div class="line">      write.csv(tempdata, paste(j, <span class="string">".csv"</span>, sep = <span class="string">""</span>))</div><div class="line">    &#125;</div><div class="line">    <span class="comment"># 退回上级文件夹</span></div><div class="line">    setwd(<span class="string">"../"</span>)</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h1 id="处理数据"><a href="#处理数据" class="headerlink" title="处理数据"></a>处理数据</h1><p>我们通过数据抓取获得了N多的数据，接下来还要通过函数来实现数据的清理。这里清理的目标是：合并一个产业分类下所有地区的数据。具体的实现形式如下。</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line">cleandata &lt;- <span class="keyword">function</span>(codeindex, postcode) &#123;</div><div class="line">  <span class="keyword">for</span> (i <span class="keyword">in</span> codeindex) &#123;</div><div class="line">    <span class="comment"># 进入一个产业分类文件夹</span></div><div class="line">    setwd(paste(<span class="string">"./"</span>, i, sep = <span class="string">""</span>))</div><div class="line"> </div><div class="line">    <span class="comment"># 创建一个空数据框</span></div><div class="line">    lsdata &lt;- data.frame()</div><div class="line"> </div><div class="line">    <span class="keyword">for</span> (j <span class="keyword">in</span> postcode) &#123;</div><div class="line">      <span class="comment"># 读取产业分类下一个地域数据</span></div><div class="line">      lsdata1 &lt;- read.csv(paste(j, <span class="string">".csv"</span>, sep = <span class="string">""</span>), header = <span class="literal">FALSE</span>)</div><div class="line">      <span class="comment"># 转置</span></div><div class="line">      lsdata2 &lt;- t(lsdata1)</div><div class="line">      <span class="comment"># 提取变量名</span></div><div class="line">      rnames &lt;- c(<span class="string">"year"</span>,lsdata2[<span class="number">1</span>,][-<span class="number">1</span>])</div><div class="line">      <span class="comment"># 转化为数据框</span></div><div class="line">      lsdata3 &lt;- as.data.frame(lsdata2[-<span class="number">1</span>,], row.names = <span class="number">1</span>)</div><div class="line">      <span class="comment"># 赋值变量名</span></div><div class="line">      names(lsdata3) &lt;- rnames</div><div class="line">      <span class="comment"># 添加地域名变量</span></div><div class="line">      lsdata3 &lt;- mutate(lsdata3, 地域 = j)</div><div class="line">      <span class="comment"># 合并数据框</span></div><div class="line">      lsdata &lt;- rbind(lsdata, lsdata3)</div><div class="line">    &#125;</div><div class="line">    <span class="comment"># 进入清洗后数据保存的文件夹</span></div><div class="line">    setwd(<span class="string">"../cleaned"</span>)</div><div class="line">    <span class="comment"># 保存文件</span></div><div class="line">    write.csv(lsdata, paste(<span class="string">"cleaned"</span>, i, <span class="string">".csv"</span>, sep = <span class="string">""</span>))</div><div class="line">    <span class="comment"># 退回上一级菜单</span></div><div class="line">    setwd(<span class="string">"../"</span>)</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h1 id="获取并清理数据"><a href="#获取并清理数据" class="headerlink" title="获取并清理数据"></a>获取并清理数据</h1><p>最后，我们可以指定所需要的产业代码和地域代码实现批量保存清理。例如：</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">datacode &lt;- c(<span class="string">"A0301"</span>, <span class="string">"A0302"</span>, <span class="keyword">...</span>)</div><div class="line">postcode &lt;- c(<span class="string">"110000"</span>, <span class="string">"120000"</span>,<span class="keyword">...</span>)</div><div class="line">getdata(datacode, postcode)</div><div class="line">cleandata(datacode, postcode)</div></pre></td></tr></table></figure>
+<h1 id="对接所有文件"><a href="#对接所有文件" class="headerlink" title="对接所有文件"></a>对接所有文件</h1><p>我们还可以通过一小段代码实现所有文件对接。</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">setwd(<span class="string">"c:/cleaned/"</span>)</div><div class="line"> </div><div class="line"><span class="comment"># 遍历文件夹</span></div><div class="line">files &lt;- dir(getwd())</div><div class="line"> </div><div class="line"><span class="comment"># 先提取第一个文件读取保存</span></div><div class="line">files1 &lt;- files[<span class="number">1</span>]</div><div class="line">alldata &lt;- read.csv(files1, header = <span class="literal">TRUE</span>)</div><div class="line">alldata &lt;- alldata[,-<span class="number">1</span>]</div><div class="line"> </div><div class="line"><span class="comment"># 读取剩下的文件并合并到第一个文件</span></div><div class="line"><span class="keyword">for</span> (i <span class="keyword">in</span> files[-<span class="number">1</span>] ) &#123;</div><div class="line">  lsdata2 &lt;- read.csv(i, header = <span class="literal">TRUE</span>)</div><div class="line">  lsdata3 &lt;- lsdata2[,-<span class="number">1</span>]</div><div class="line">  alldata &lt;- merge(alldata, lsdata3)</div><div class="line">&#125;</div><div class="line"> </div><div class="line"><span class="comment"># 保存文件</span></div><div class="line">write.csv(lsdata1, <span class="string">"dataall.csv"</span>)</div><div class="line"><span class="comment"># 列出前6个对象</span></div><div class="line">head(lsdata1)</div></pre></td></tr></table></figure>
+<h1 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h1><p>通过两个函数大大简化了数据的获取流程，但是感觉数据清理函数虽然可以达到目的，应该还有更加简化的写法，并且应该还可以引入通道的手法，进一步增加效率。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/R/" rel="tag"># R</a>
+          
+            <a href="/tags/data/" rel="tag"># data</a>
+          
+            <a href="/tags/cleaning/" rel="tag"># cleaning</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/05/28/配置hexo/" rel="next" title="配置hexo">
+                <i class="fa fa-chevron-left"></i> 配置hexo
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/06/11/R向量化操作/" rel="prev" title="R向量化操作">
+                R向量化操作 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="eimei" />
+          <p class="site-author-name" itemprop="name">eimei</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-name">tags</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#准备工具"><span class="nav-number">1.</span> <span class="nav-text">准备工具</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#问题"><span class="nav-number">2.</span> <span class="nav-text">问题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#获取数据"><span class="nav-number">3.</span> <span class="nav-text">获取数据</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#处理数据"><span class="nav-number">4.</span> <span class="nav-text">处理数据</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#获取并清理数据"><span class="nav-number">5.</span> <span class="nav-text">获取并清理数据</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#对接所有文件"><span class="nav-number">6.</span> <span class="nav-text">对接所有文件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#后记"><span class="nav-number">7.</span> <span class="nav-text">后记</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">eimei</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://http-www-imxun-cn.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://yoursite.com/2017/06/01/批量抓取保存处理国家数据库数据的一点小心得/';
+          this.page.identifier = '2017/06/01/批量抓取保存处理国家数据库数据的一点小心得/';
+          this.page.title = '批量抓取保存处理国家数据库数据的一点小心得';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://http-www-imxun-cn.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
