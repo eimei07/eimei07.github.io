@@ -1,0 +1,768 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="R,Data," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="在R中提供了t()函数用来进行转置，很多时候确实提供了诸多便利，但是由于t()函数在转置时会强制把data.frame函数转换成matrix格式，在后续的计算中又带来麻烦。由于在平时的计算中会经常用到转置，为了节省时间，把data.frame格式转置的一系列操作打包成函数备份，方便以后使用。  使用的包和数据由于在平时的计算中会经常用到data.table()包，所以这里的dataframe转置">
+<meta name="keywords" content="R,Data">
+<meta property="og:type" content="article">
+<meta property="og:title" content="dataframe 转置函数">
+<meta property="og:url" content="http://yoursite.com/2017/07/11/dataframe_zhuanzhi/index.html">
+<meta property="og:site_name" content="IMXUN">
+<meta property="og:description" content="在R中提供了t()函数用来进行转置，很多时候确实提供了诸多便利，但是由于t()函数在转置时会强制把data.frame函数转换成matrix格式，在后续的计算中又带来麻烦。由于在平时的计算中会经常用到转置，为了节省时间，把data.frame格式转置的一系列操作打包成函数备份，方便以后使用。  使用的包和数据由于在平时的计算中会经常用到data.table()包，所以这里的dataframe转置">
+<meta property="og:updated_time" content="2017-07-11T14:40:59.023Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="dataframe 转置函数">
+<meta name="twitter:description" content="在R中提供了t()函数用来进行转置，很多时候确实提供了诸多便利，但是由于t()函数在转置时会强制把data.frame函数转换成matrix格式，在后续的计算中又带来麻烦。由于在平时的计算中会经常用到转置，为了节省时间，把data.frame格式转置的一系列操作打包成函数备份，方便以后使用。  使用的包和数据由于在平时的计算中会经常用到data.table()包，所以这里的dataframe转置">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/07/11/dataframe_zhuanzhi/"/>
+
+
+
+
+
+  <title>dataframe 转置函数 | IMXUN</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?e54d1ad90d142aff61c2c4e332942dad";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">IMXUN</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Learn and live</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/07/11/dataframe_zhuanzhi/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="eimei">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="IMXUN">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">dataframe 转置函数</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-07-11T22:57:11+09:00">
+                2017-07-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/数据处理/" itemprop="url" rel="index">
+                    <span itemprop="name">数据处理</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a class="cloud-tie-join-count" href="/2017/07/11/dataframe_zhuanzhi/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count join-count" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>在R中提供了<code>t()</code>函数用来进行转置，很多时候确实提供了诸多便利，但是由于<code>t()</code>函数在转置时会强制把<code>data.frame</code>函数转换成<code>matrix</code>格式，在后续的计算中又带来麻烦。由于在平时的计算中会经常用到转置，为了节省时间，把<code>data.frame</code>格式转置的一系列操作打包成函数备份，方便以后使用。</p>
+</blockquote>
+<h2 id="使用的包和数据"><a href="#使用的包和数据" class="headerlink" title="使用的包和数据"></a>使用的包和数据</h2><p>由于在平时的计算中会经常用到<code>data.table()</code>包，所以这里的dataframe转置函数默认已经载入此包。这里我们使用中国北京市的一组经济数据，具体如下。</p>
+<a id="more"></a> 
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">library</span>(data.table)</div><div class="line"></div><div class="line">&gt; tdata</div><div class="line">                                        V1    <span class="number">2015</span>年   <span class="number">2014</span>年   <span class="number">2013</span>年   <span class="number">2012</span>年   <span class="number">2011</span>年   <span class="number">2010</span>年   <span class="number">2009</span>年   <span class="number">2008</span>年   <span class="number">2007</span>年   <span class="number">2006</span>年   <span class="number">2005</span>年</div><div class="line"> <span class="number">1</span>:                     地区生产总值(亿元)  <span class="number">23014.59</span> <span class="number">21330.83</span> <span class="number">19800.81</span> <span class="number">17879.40</span> <span class="number">16251.93</span> <span class="number">14113.58</span> <span class="number">12153.03</span> <span class="number">11115.00</span>  <span class="number">9846.81</span>  <span class="number">8117.78</span>  <span class="number">6969.52</span></div><div class="line"> <span class="number">2</span>:                   第一产业增加值(亿元)    <span class="number">140.21</span>   <span class="number">158.99</span>   <span class="number">159.64</span>   <span class="number">150.20</span>   <span class="number">136.27</span>   <span class="number">124.36</span>   <span class="number">118.29</span>   <span class="number">112.83</span>   <span class="number">101.26</span>    <span class="number">88.80</span>    <span class="number">88.68</span></div><div class="line"> <span class="number">3</span>:                   第二产业增加值(亿元)   <span class="number">4542.64</span>  <span class="number">4544.80</span>  <span class="number">4292.56</span>  <span class="number">4059.27</span>  <span class="number">3752.48</span>  <span class="number">3388.38</span>  <span class="number">2855.55</span>  <span class="number">2626.41</span>  <span class="number">2509.40</span>  <span class="number">2191.43</span>  <span class="number">2026.51</span></div><div class="line"> <span class="number">4</span>:                   第三产业增加值(亿元)  <span class="number">18331.74</span> <span class="number">16627.04</span> <span class="number">15348.61</span> <span class="number">13669.93</span> <span class="number">12363.18</span> <span class="number">10600.84</span>  <span class="number">9179.19</span>  <span class="number">8375.76</span>  <span class="number">7236.15</span>  <span class="number">5837.55</span>  <span class="number">4854.33</span></div><div class="line"> <span class="number">5</span>:                 农林牧渔业增加值(亿元)    <span class="number">142.60</span>   <span class="number">161.32</span>   <span class="number">161.83</span>   <span class="number">150.20</span>   <span class="number">136.27</span>   <span class="number">124.36</span>   <span class="number">118.29</span>   <span class="number">112.83</span>   <span class="number">101.26</span>    <span class="number">88.80</span>    <span class="number">88.68</span></div><div class="line"> <span class="number">6</span>:                       工业增加值(亿元)   <span class="number">3710.88</span>  <span class="number">3746.77</span>  <span class="number">3566.43</span>  <span class="number">3294.32</span>  <span class="number">3048.79</span>  <span class="number">2763.99</span>  <span class="number">2303.08</span>  <span class="number">2131.75</span>  <span class="number">2082.76</span>  <span class="number">1821.86</span>  <span class="number">1707.04</span></div><div class="line"> <span class="number">7</span>:                     建筑业增加值(亿元)    <span class="number">961.86</span>   <span class="number">902.66</span>   <span class="number">831.55</span>   <span class="number">764.95</span>   <span class="number">703.69</span>   <span class="number">624.39</span>   <span class="number">552.47</span>   <span class="number">494.66</span>   <span class="number">426.64</span>   <span class="number">369.57</span>   <span class="number">319.47</span></div><div class="line"> <span class="number">8</span>:               批发和零售业增加值(亿元)   <span class="number">2352.34</span>  <span class="number">2411.14</span>  <span class="number">2340.74</span>  <span class="number">2229.77</span>  <span class="number">2139.65</span>  <span class="number">1888.51</span>  <span class="number">1525.03</span>  <span class="number">1426.72</span>  <span class="number">1098.23</span>   <span class="number">871.96</span>   <span class="number">704.28</span></div><div class="line"> <span class="number">9</span>:       批发和零售贸易餐饮业增加值(亿元)      <span class="number">0.00</span>     <span class="number">0.00</span>     <span class="number">0.00</span>     <span class="number">0.00</span>     <span class="number">0.00</span>     <span class="number">0.00</span>     <span class="number">0.00</span>     <span class="number">0.00</span>     <span class="number">0.00</span>     <span class="number">0.00</span>     <span class="number">0.00</span></div><div class="line"><span class="number">10</span>:     交通运输、仓储和邮政业增加值(亿元)    <span class="number">983.87</span>   <span class="number">948.10</span>   <span class="number">871.76</span>   <span class="number">816.31</span>   <span class="number">808.95</span>   <span class="number">712.01</span>   <span class="number">556.64</span>   <span class="number">498.92</span>   <span class="number">497.55</span>   <span class="number">455.21</span>   <span class="number">403.32</span></div><div class="line"><span class="number">11</span>: 交通运输、仓储和邮电通信业增加值(亿元)      <span class="number">0.00</span>     <span class="number">0.00</span>     <span class="number">0.00</span>     <span class="number">0.00</span>     <span class="number">0.00</span>     <span class="number">0.00</span>     <span class="number">0.00</span>     <span class="number">0.00</span>     <span class="number">0.00</span>     <span class="number">0.00</span>     <span class="number">0.00</span></div><div class="line"><span class="number">12</span>:               住宿和餐饮业增加值(亿元)    <span class="number">397.59</span>   <span class="number">363.76</span>   <span class="number">374.75</span>   <span class="number">373.06</span>   <span class="number">348.42</span>   <span class="number">317.34</span>   <span class="number">262.51</span>   <span class="number">274.43</span>   <span class="number">244.96</span>   <span class="number">218.39</span>   <span class="number">182.30</span></div><div class="line"><span class="number">13</span>:                     金融业增加值(亿元)   <span class="number">3926.28</span>  <span class="number">3357.71</span>  <span class="number">2943.13</span>  <span class="number">2536.91</span>  <span class="number">2215.41</span>  <span class="number">1863.61</span>  <span class="number">1603.63</span>  <span class="number">1519.19</span>  <span class="number">1302.77</span>   <span class="number">982.37</span>   <span class="number">840.20</span></div><div class="line"><span class="number">14</span>:                   房地产业增加值(亿元)   <span class="number">1438.43</span>  <span class="number">1329.20</span>  <span class="number">1339.52</span>  <span class="number">1244.17</span>  <span class="number">1074.93</span>  <span class="number">1006.52</span>  <span class="number">1062.47</span>   <span class="number">844.59</span>   <span class="number">821.50</span>   <span class="number">658.30</span>   <span class="number">493.73</span></div><div class="line"><span class="number">15</span>:                   其他行业增加值(亿元)   <span class="number">9100.73</span>  <span class="number">8110.18</span>  <span class="number">7371.10</span>  <span class="number">6469.71</span>  <span class="number">5775.82</span>  <span class="number">4812.85</span>  <span class="number">4168.91</span>  <span class="number">3811.91</span>  <span class="number">3271.14</span>  <span class="number">2651.32</span>  <span class="number">2230.50</span></div><div class="line"><span class="number">16</span>:                人均地区生产总值(元/人) <span class="number">106497.00</span> <span class="number">99995.00</span> <span class="number">94647.88</span> <span class="number">87474.74</span> <span class="number">81658.00</span> <span class="number">73856.00</span> <span class="number">66940.00</span> <span class="number">64491.00</span> <span class="number">60096.00</span> <span class="number">49505.00</span> <span class="number">45443.69</span></div><div class="line">      <span class="number">2004</span>年   <span class="number">2003</span>年   <span class="number">2002</span>年   <span class="number">2001</span>年   <span class="number">2000</span>年   <span class="number">1999</span>年   <span class="number">1998</span>年   <span class="number">1997</span>年   <span class="number">1996</span>年</div><div class="line"> <span class="number">1</span>:  <span class="number">6033.21</span>  <span class="number">5007.21</span>  <span class="number">4315.00</span>  <span class="number">3707.96</span>  <span class="number">3161.66</span>  <span class="number">2678.82</span>  <span class="number">2377.18</span>  <span class="number">2077.09</span>  <span class="number">1789.20</span></div><div class="line"> <span class="number">2</span>:    <span class="number">87.36</span>    <span class="number">84.11</span>    <span class="number">82.44</span>    <span class="number">80.78</span>    <span class="number">79.25</span>    <span class="number">78.35</span>    <span class="number">77.86</span>    <span class="number">77.18</span>    <span class="number">73.36</span></div><div class="line"> <span class="number">3</span>:  <span class="number">1853.58</span>  <span class="number">1487.15</span>  <span class="number">1249.99</span>  <span class="number">1142.35</span>  <span class="number">1033.29</span>   <span class="number">907.34</span>   <span class="number">840.57</span>   <span class="number">781.85</span>   <span class="number">714.65</span></div><div class="line"> <span class="number">4</span>:  <span class="number">4092.27</span>  <span class="number">3435.95</span>  <span class="number">2982.57</span>  <span class="number">2484.83</span>  <span class="number">2049.12</span>  <span class="number">1693.13</span>  <span class="number">1458.75</span>  <span class="number">1218.06</span>  <span class="number">1001.19</span></div><div class="line"> <span class="number">5</span>:    <span class="number">87.36</span>    <span class="number">84.11</span>    <span class="number">82.44</span>    <span class="number">80.78</span>    <span class="number">79.25</span>    <span class="number">78.35</span>    <span class="number">77.86</span>    <span class="number">77.18</span>    <span class="number">73.36</span></div><div class="line"> <span class="number">6</span>:  <span class="number">1554.73</span>  <span class="number">1224.48</span>  <span class="number">1021.16</span>   <span class="number">938.81</span>   <span class="number">844.01</span>   <span class="number">723.98</span>   <span class="number">670.36</span>   <span class="number">635.91</span>   <span class="number">576.14</span></div><div class="line"> <span class="number">7</span>:   <span class="number">298.85</span>   <span class="number">262.67</span>   <span class="number">228.83</span>   <span class="number">203.54</span>   <span class="number">189.28</span>   <span class="number">183.36</span>   <span class="number">170.21</span>   <span class="number">145.94</span>   <span class="number">138.51</span></div><div class="line"> <span class="number">8</span>:   <span class="number">587.70</span>     <span class="number">0.00</span>     <span class="number">0.00</span>     <span class="number">0.00</span>     <span class="number">0.00</span>     <span class="number">0.00</span>     <span class="number">0.00</span>     <span class="number">0.00</span>     <span class="number">0.00</span></div><div class="line"> <span class="number">9</span>:     <span class="number">0.00</span>   <span class="number">567.09</span>   <span class="number">509.68</span>   <span class="number">459.11</span>   <span class="number">406.38</span>   <span class="number">364.46</span>   <span class="number">331.84</span>   <span class="number">299.74</span>   <span class="number">257.78</span></div><div class="line"><span class="number">10</span>:   <span class="number">356.78</span>     <span class="number">0.00</span>     <span class="number">0.00</span>     <span class="number">0.00</span>     <span class="number">0.00</span>     <span class="number">0.00</span>     <span class="number">0.00</span>     <span class="number">0.00</span>     <span class="number">0.00</span></div><div class="line"><span class="number">11</span>:     <span class="number">0.00</span>   <span class="number">463.39</span>   <span class="number">408.41</span>   <span class="number">360.89</span>   <span class="number">298.67</span>   <span class="number">249.74</span>   <span class="number">217.97</span>   <span class="number">182.77</span>   <span class="number">145.86</span></div><div class="line"><span class="number">12</span>:   <span class="number">163.30</span>     <span class="number">0.00</span>     <span class="number">0.00</span>     <span class="number">0.00</span>     <span class="number">0.00</span>     <span class="number">0.00</span>     <span class="number">0.00</span>     <span class="number">0.00</span>     <span class="number">0.00</span></div><div class="line"><span class="number">13</span>:   <span class="number">713.79</span>   <span class="number">635.56</span>   <span class="number">561.91</span>   <span class="number">487.54</span>   <span class="number">425.19</span>   <span class="number">356.85</span>   <span class="number">307.38</span>   <span class="number">268.14</span>   <span class="number">194.71</span></div><div class="line"><span class="number">14</span>:   <span class="number">436.11</span>   <span class="number">341.88</span>   <span class="number">298.02</span>   <span class="number">203.55</span>   <span class="number">144.01</span>   <span class="number">105.55</span>    <span class="number">75.32</span>    <span class="number">48.21</span>    <span class="number">34.63</span></div><div class="line"><span class="number">15</span>:  <span class="number">1834.59</span>  <span class="number">1428.03</span>  <span class="number">1204.55</span>   <span class="number">973.74</span>   <span class="number">774.87</span>   <span class="number">616.53</span>   <span class="number">526.24</span>   <span class="number">419.20</span>   <span class="number">368.21</span></div><div class="line"><span class="number">16</span>: <span class="number">41099.00</span> <span class="number">34892.00</span> <span class="number">30840.00</span> <span class="number">26998.00</span> <span class="number">24122.00</span> <span class="number">21407.00</span> <span class="number">19128.00</span> <span class="number">16621.00</span> <span class="number">14254.00</span></div></pre></td></tr></table></figure>
+<h2 id="处理思路"><a href="#处理思路" class="headerlink" title="处理思路"></a>处理思路</h2><ol>
+<li>​首先提取原数据集除去首列的所有列名。</li>
+<li>​转置原数据集,保存为<code>tempdata</code>，此时的格式为<code>matrix</code>格式。</li>
+<li>提取<code>tempdata</code>的第一行。</li>
+<li>把<code>tempdata</code>去除第一行的数据转化为<code>data.table</code>格式。</li>
+<li>把提取到的<code>tempdata</code>第一行作为列名赋值给<code>data.table</code>格式的<code>tempdata</code>。</li>
+<li>把提取到原数据集除去首列的所有列名和<code>tempdata</code>进行<code>cbind</code>操作。</li>
+</ol>
+<h2 id="具体实现代码"><a href="#具体实现代码" class="headerlink" title="具体实现代码"></a>具体实现代码</h2><figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">&gt; dft &lt;- <span class="keyword">function</span>(dataset) &#123;</div><div class="line">  colnames &lt;- names(dataset)[-<span class="number">1</span>]</div><div class="line">  tempdata &lt;- t(dataset)</div><div class="line">  rownames &lt;- tempdata[<span class="number">1</span>,]</div><div class="line">  tempdata &lt;- as.data.table(tempdata[-<span class="number">1</span>,], row.names = <span class="number">1</span>)</div><div class="line">  names(tempdata) &lt;- rownames</div><div class="line">  tempdata &lt;- cbind(tempdata, colnames)</div><div class="line">  tempdata</div><div class="line">  &#125;</div></pre></td></tr></table></figure>
+<p>通过上述代码对tdata进行转置操作。</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">&gt; tdata1 &lt;- dft(tdata)</div><div class="line"></div><div class="line">&gt; head(tdata1)</div><div class="line">   地区生产总值(亿元) 第一产业增加值(亿元) 第二产业增加值(亿元) 第三产业增加值(亿元) 农林牧渔业增加值(亿元) 工业增加值(亿元) 建筑业增加值(亿元)</div><div class="line"><span class="number">1</span>:           <span class="number">23014.59</span>               <span class="number">140.21</span>              <span class="number">4542.64</span>             <span class="number">18331.74</span>                 <span class="number">142.60</span>          <span class="number">3710.88</span>             <span class="number">961.86</span></div><div class="line"><span class="number">2</span>:           <span class="number">21330.83</span>               <span class="number">158.99</span>              <span class="number">4544.80</span>             <span class="number">16627.04</span>                 <span class="number">161.32</span>          <span class="number">3746.77</span>             <span class="number">902.66</span></div><div class="line"><span class="number">3</span>:           <span class="number">19800.81</span>               <span class="number">159.64</span>              <span class="number">4292.56</span>             <span class="number">15348.61</span>                 <span class="number">161.83</span>          <span class="number">3566.43</span>             <span class="number">831.55</span></div><div class="line"><span class="number">4</span>:           <span class="number">17879.40</span>               <span class="number">150.20</span>              <span class="number">4059.27</span>             <span class="number">13669.93</span>                 <span class="number">150.20</span>          <span class="number">3294.32</span>             <span class="number">764.95</span></div><div class="line"><span class="number">5</span>:           <span class="number">16251.93</span>               <span class="number">136.27</span>              <span class="number">3752.48</span>             <span class="number">12363.18</span>                 <span class="number">136.27</span>          <span class="number">3048.79</span>             <span class="number">703.69</span></div><div class="line"><span class="number">6</span>:           <span class="number">14113.58</span>               <span class="number">124.36</span>              <span class="number">3388.38</span>             <span class="number">10600.84</span>                 <span class="number">124.36</span>          <span class="number">2763.99</span>             <span class="number">624.39</span></div><div class="line">   批发和零售业增加值(亿元) 批发和零售贸易餐饮业增加值(亿元) 交通运输、仓储和邮政业增加值(亿元) 交通运输、仓储和邮电通信业增加值(亿元)</div><div class="line"><span class="number">1</span>:                  <span class="number">2352.34</span>                             <span class="number">0.00</span>                             <span class="number">983.87</span>                                   <span class="number">0.00</span></div><div class="line"><span class="number">2</span>:                  <span class="number">2411.14</span>                             <span class="number">0.00</span>                             <span class="number">948.10</span>                                   <span class="number">0.00</span></div><div class="line"><span class="number">3</span>:                  <span class="number">2340.74</span>                             <span class="number">0.00</span>                             <span class="number">871.76</span>                                   <span class="number">0.00</span></div><div class="line"><span class="number">4</span>:                  <span class="number">2229.77</span>                             <span class="number">0.00</span>                             <span class="number">816.31</span>                                   <span class="number">0.00</span></div><div class="line"><span class="number">5</span>:                  <span class="number">2139.65</span>                             <span class="number">0.00</span>                             <span class="number">808.95</span>                                   <span class="number">0.00</span></div><div class="line"><span class="number">6</span>:                  <span class="number">1888.51</span>                             <span class="number">0.00</span>                             <span class="number">712.01</span>                                   <span class="number">0.00</span></div><div class="line">   住宿和餐饮业增加值(亿元) 金融业增加值(亿元) 房地产业增加值(亿元) 其他行业增加值(亿元) 人均地区生产总值(元/人) colnames</div><div class="line"><span class="number">1</span>:                   <span class="number">397.59</span>            <span class="number">3926.28</span>              <span class="number">1438.43</span>              <span class="number">9100.73</span>               <span class="number">106497.00</span>   <span class="number">2015</span>年</div><div class="line"><span class="number">2</span>:                   <span class="number">363.76</span>            <span class="number">3357.71</span>              <span class="number">1329.20</span>              <span class="number">8110.18</span>                <span class="number">99995.00</span>   <span class="number">2014</span>年</div><div class="line"><span class="number">3</span>:                   <span class="number">374.75</span>            <span class="number">2943.13</span>              <span class="number">1339.52</span>              <span class="number">7371.10</span>                <span class="number">94647.88</span>   <span class="number">2013</span>年</div><div class="line"><span class="number">4</span>:                   <span class="number">373.06</span>            <span class="number">2536.91</span>              <span class="number">1244.17</span>              <span class="number">6469.71</span>                <span class="number">87474.74</span>   <span class="number">2012</span>年</div><div class="line"><span class="number">5</span>:                   <span class="number">348.42</span>            <span class="number">2215.41</span>              <span class="number">1074.93</span>              <span class="number">5775.82</span>                <span class="number">81658.00</span>   <span class="number">2011</span>年</div><div class="line"><span class="number">6</span>:                   <span class="number">317.34</span>            <span class="number">1863.61</span>              <span class="number">1006.52</span>              <span class="number">4812.85</span>                <span class="number">73856.00</span>   <span class="number">2010</span>年</div></pre></td></tr></table></figure>
+<p>大功告成，年份出现在最后一列。如果有强迫症，或者为了以后计算更加方便，还可以再加入一个参数，直接指定最后一列的列名，缺省值为<code>&quot;colnames&quot;</code>。</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">&gt; dft &lt;- <span class="keyword">function</span>(dataset, indexname = <span class="string">"colnames"</span>) &#123;</div><div class="line">  colnames &lt;- names(dataset)[-<span class="number">1</span>]</div><div class="line">  tempdata &lt;- t(dataset)</div><div class="line">  rownames &lt;- tempdata[<span class="number">1</span>,]</div><div class="line">  tempdata &lt;- as.data.table(tempdata[-<span class="number">1</span>,], row.names = <span class="number">1</span>)</div><div class="line">  names(tempdata) &lt;- rownames</div><div class="line">  tempdata &lt;- cbind(tempdata, colnames)</div><div class="line">  names(tempdata)[length(names(tempdata))] &lt;- indexname</div><div class="line">  tempdata</div><div class="line">  &#125;</div></pre></td></tr></table></figure>
+<p>然后就可以通过<code>indexname</code>参数来指定列名。</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 默认参数</span></div><div class="line">&gt; tdata1 &lt;- dft(dataset)</div><div class="line">&gt; names(tdata1)</div><div class="line"> [<span class="number">1</span>] <span class="string">"地区生产总值(亿元)"</span>                     <span class="string">"第一产业增加值(亿元)"</span>                   <span class="string">"第二产业增加值(亿元)"</span>                  </div><div class="line"> [<span class="number">4</span>] <span class="string">"第三产业增加值(亿元)"</span>                   <span class="string">"农林牧渔业增加值(亿元)"</span>                 <span class="string">"工业增加值(亿元)"</span>                      </div><div class="line"> [<span class="number">7</span>] <span class="string">"建筑业增加值(亿元)"</span>                     <span class="string">"批发和零售业增加值(亿元)"</span>               <span class="string">"批发和零售贸易餐饮业增加值(亿元)"</span>      </div><div class="line">[<span class="number">10</span>] <span class="string">"交通运输、仓储和邮政业增加值(亿元)"</span>     <span class="string">"交通运输、仓储和邮电通信业增加值(亿元)"</span> <span class="string">"住宿和餐饮业增加值(亿元)"</span>              </div><div class="line">[<span class="number">13</span>] <span class="string">"金融业增加值(亿元)"</span>                     <span class="string">"房地产业增加值(亿元)"</span>                   <span class="string">"其他行业增加值(亿元)"</span>                  </div><div class="line">[<span class="number">16</span>] <span class="string">"人均地区生产总值(元/人)"</span>                <span class="string">"colnames"</span>              </div><div class="line"></div><div class="line"><span class="comment"># 指定参数                </span></div><div class="line">&gt; tdata1 &lt;- dft(tdata, <span class="string">"年份"</span>)</div><div class="line">&gt; names(tdata1)</div><div class="line"> [<span class="number">1</span>] <span class="string">"地区生产总值(亿元)"</span>                     <span class="string">"第一产业增加值(亿元)"</span>                   <span class="string">"第二产业增加值(亿元)"</span>                  </div><div class="line"> [<span class="number">4</span>] <span class="string">"第三产业增加值(亿元)"</span>                   <span class="string">"农林牧渔业增加值(亿元)"</span>                 <span class="string">"工业增加值(亿元)"</span>                      </div><div class="line"> [<span class="number">7</span>] <span class="string">"建筑业增加值(亿元)"</span>                     <span class="string">"批发和零售业增加值(亿元)"</span>               <span class="string">"批发和零售贸易餐饮业增加值(亿元)"</span>      </div><div class="line">[<span class="number">10</span>] <span class="string">"交通运输、仓储和邮政业增加值(亿元)"</span>     <span class="string">"交通运输、仓储和邮电通信业增加值(亿元)"</span> <span class="string">"住宿和餐饮业增加值(亿元)"</span>              </div><div class="line">[<span class="number">13</span>] <span class="string">"金融业增加值(亿元)"</span>                     <span class="string">"房地产业增加值(亿元)"</span>                   <span class="string">"其他行业增加值(亿元)"</span>                  </div><div class="line">[<span class="number">16</span>] <span class="string">"人均地区生产总值(元/人)"</span>                <span class="string">"年份"</span></div></pre></td></tr></table></figure>
+<p>通过以上函数，我们就可以快速转置数据框，进行数据操作了。</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">&gt; tdata1[年份 == <span class="string">"2015年"</span>]</div><div class="line">   地区生产总值(亿元) 第一产业增加值(亿元) 第二产业增加值(亿元) 第三产业增加值(亿元) 农林牧渔业增加值(亿元) 工业增加值(亿元) 建筑业增加值(亿元)</div><div class="line"><span class="number">1</span>:           <span class="number">23014.59</span>               <span class="number">140.21</span>              <span class="number">4542.64</span>             <span class="number">18331.74</span>                 <span class="number">142.60</span>          <span class="number">3710.88</span>             <span class="number">961.86</span></div><div class="line">   批发和零售业增加值(亿元) 批发和零售贸易餐饮业增加值(亿元) 交通运输、仓储和邮政业增加值(亿元) 交通运输、仓储和邮电通信业增加值(亿元)</div><div class="line"><span class="number">1</span>:                  <span class="number">2352.34</span>                             <span class="number">0.00</span>                             <span class="number">983.87</span>                                   <span class="number">0.00</span></div><div class="line">   住宿和餐饮业增加值(亿元) 金融业增加值(亿元) 房地产业增加值(亿元) 其他行业增加值(亿元) 人均地区生产总值(元/人)   年份</div><div class="line"><span class="number">1</span>:                   <span class="number">397.59</span>            <span class="number">3926.28</span>              <span class="number">1438.43</span>              <span class="number">9100.73</span>               <span class="number">106497.00</span> <span class="number">2015</span>年</div></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/R/" rel="tag"># R</a>
+          
+            <a href="/tags/Data/" rel="tag"># Data</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/06/17/data.table包用法简介/" rel="next" title="data.table包用法简介">
+                <i class="fa fa-chevron-left"></i> data.table包用法简介
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="eimei" />
+          <p class="site-author-name" itemprop="name">eimei</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#使用的包和数据"><span class="nav-number">1.</span> <span class="nav-text">使用的包和数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#处理思路"><span class="nav-number">2.</span> <span class="nav-text">处理思路</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#具体实现代码"><span class="nav-number">3.</span> <span class="nav-text">具体实现代码</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">eimei</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+    <script>
+      var cloudTieConfig = {
+        url: document.location.href, 
+        sourceId: "",
+        productKey: "44e1681152db42c1af18635599a0303a",
+        target: "cloud-tie-wrapper"
+      };
+    </script>
+    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
